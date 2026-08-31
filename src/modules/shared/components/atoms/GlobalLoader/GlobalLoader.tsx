@@ -1,4 +1,5 @@
 import { useAppSelector } from 'modules/shared/hooks/useAppDispatch';
+import CanvasLogo from 'modules/shared/components/atoms/CanvasLogo/CanvasLogo';
 import './GlobalLoader.scss';
 
 const GlobalLoader = () => {
@@ -9,7 +10,7 @@ const GlobalLoader = () => {
   return (
     <div className="global-loader">
       <div className="global-loader__card">
-        <img src="/logo-alaria-loader.svg" alt="Cargando..." className="global-loader__logo" />
+        <CanvasLogo size={110} color="#0B1E24" flutter={10} speed={1.3} />
       </div>
     </div>
   );

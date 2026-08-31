@@ -70,45 +70,62 @@
 
   &__btn {
     flex: 1;
-    padding: 0.625rem 1.25rem;
+    padding: 0.6875rem 1.25rem;
     border-radius: 50px;
     font-size: 0.875rem;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease, background 0.2s ease;
+
+    &:active {
+      transform: translateY(0);
+    }
 
     &--cancel {
-      background: $gray-100;
+      background: linear-gradient(135deg, #ffffff 0%, #f1f4f5 100%);
       color: $gray-700;
+      border: 1px solid $gray-200;
+      box-shadow: 0 1px 2px rgba(11, 30, 36, 0.05), 0 2px 6px rgba(11, 30, 36, 0.06);
 
       &:hover {
-        background: $gray-200;
+        transform: translateY(-1px);
+        border-color: $gray-300;
+        box-shadow: 0 2px 4px rgba(11, 30, 36, 0.06), 0 8px 18px rgba(11, 30, 36, 0.1);
       }
     }
 
     &--danger {
-      background: #b91c1c;
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
       color: $white;
+      box-shadow: 0 1px 2px rgba(185, 28, 28, 0.25), 0 6px 16px rgba(185, 28, 28, 0.3);
 
       &:hover {
-        background: #991b1b;
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow: 0 2px 4px rgba(185, 28, 28, 0.25), 0 12px 28px rgba(185, 28, 28, 0.4);
       }
     }
 
     &--warning {
-      background: #b45309;
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
       color: $white;
+      box-shadow: 0 1px 2px rgba(180, 83, 9, 0.25), 0 6px 16px rgba(180, 83, 9, 0.3);
 
       &:hover {
-        background: #92400e;
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow: 0 2px 4px rgba(180, 83, 9, 0.25), 0 12px 28px rgba(180, 83, 9, 0.4);
       }
     }
 
     &--info {
-      background: $primary;
+      background: linear-gradient(135deg, #163a45 0%, #0B1E24 100%);
       color: $white;
+      box-shadow: 0 1px 2px rgba(11, 30, 36, 0.2), 0 6px 16px rgba(11, 30, 36, 0.25);
 
       &:hover {
-        background: $primary-dark;
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow: 0 2px 4px rgba(11, 30, 36, 0.2), 0 12px 28px rgba(11, 30, 36, 0.35);
       }
     }
   }

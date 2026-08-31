@@ -7,7 +7,7 @@ export const favoritesService = {
       .select('id')
       .eq('property_id', propertyId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
     return Boolean(data);
   },
 
@@ -17,7 +17,7 @@ export const favoritesService = {
       .select('id')
       .eq('property_id', propertyId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       await supabase.from('house_favorites').delete().eq('id', existing.id);

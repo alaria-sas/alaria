@@ -14,16 +14,45 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   overflow-x: hidden;
+
+  // Texto más grande y legible en dispositivos móviles.
+  // Como casi todo el app usa rem, subir el base escala todo proporcionalmente.
+  @media (max-width: $breakpoint-md) {
+    font-size: 18px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    font-size: 18.5px;
+  }
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: $bg-gradient;
+  background-attachment: fixed;
   color: $gray-800;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
+}
+
+// Halos de color muy sutiles para dar profundidad al fondo
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(26, 138, 125, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(11, 30, 36, 0.04) 0%, transparent 45%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 a {
@@ -50,6 +79,154 @@ video {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+// ─────────────────────────────────────────────
+// Sistema de botones con gradiente y profundidad
+// ─────────────────────────────────────────────
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease;
+  isolation: isolate;
+
+  // brillo diagonal que recorre el botón al hover
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.5s ease;
+    z-index: -1;
+  }
+
+  &:hover:not(:disabled)::after {
+    transform: translateX(120%);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($accent, 0.35);
+  }
+
+  // Variante primaria (azul petróleo con gradiente)
+  &--primary {
+    background: linear-gradient(135deg, #163a45 0%, #0B1E24 100%);
+    color: $white;
+    box-shadow:
+      0 1px 2px rgba(11, 30, 36, 0.2),
+      0 6px 16px rgba(11, 30, 36, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(11, 30, 36, 0.2),
+        0 12px 28px rgba(11, 30, 36, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      filter: brightness(1.08);
+    }
+  }
+
+  // Variante de acento (teal)
+  &--accent {
+    background: linear-gradient(135deg, #23a596 0%, #1a8a7d 100%);
+    color: $white;
+    box-shadow:
+      0 1px 2px rgba(26, 138, 125, 0.25),
+      0 6px 16px rgba(26, 138, 125, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(26, 138, 125, 0.25),
+        0 12px 28px rgba(26, 138, 125, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      filter: brightness(1.08);
+    }
+  }
+
+  // Variante de éxito (verde con gradiente)
+  &--success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: $white;
+    box-shadow:
+      0 1px 2px rgba(22, 163, 74, 0.25),
+      0 6px 16px rgba(22, 163, 74, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(22, 163, 74, 0.25),
+        0 12px 28px rgba(22, 163, 74, 0.4);
+      filter: brightness(1.08);
+    }
+  }
+
+  // Variante secundaria (clara, con borde y sutil relieve)
+  &--secondary {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f4f5 100%);
+    color: $primary;
+    border: 1px solid $gray-200;
+    box-shadow:
+      0 1px 2px rgba(11, 30, 36, 0.05),
+      0 2px 6px rgba(11, 30, 36, 0.06);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow:
+        0 2px 4px rgba(11, 30, 36, 0.06),
+        0 8px 18px rgba(11, 30, 36, 0.1);
+      border-color: $gray-300;
+    }
+  }
+
+  // Variante peligro (rojo con gradiente)
+  &--danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: $white;
+    box-shadow:
+      0 1px 2px rgba(220, 38, 38, 0.25),
+      0 6px 16px rgba(220, 38, 38, 0.3);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(220, 38, 38, 0.25),
+        0 12px 28px rgba(220, 38, 38, 0.4);
+      filter: brightness(1.08);
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--pill {
+    border-radius: 50px;
+  }
 }
 
 // Utility classes
@@ -83,6 +260,10 @@ video {
 ::-webkit-scrollbar-thumb {
   background: $gray-300;
   border-radius: 3px;
+
+  &:hover {
+    background: $gray-400;
+  }
 }
 
 

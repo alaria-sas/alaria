@@ -1,17 +1,31 @@
 @use 'modules/shared/styles/variables' as *;
 
 .property-card {
-  background: $white;
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfc 100%);
   border-radius: $radius-xl;
   overflow: hidden;
   box-shadow: $shadow-card;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
   cursor: pointer;
-  border: 1px solid rgba($gray-200, 0.6);
+  border: 1px solid rgba($gray-200, 0.7);
+
+  // luz superior sutil
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    z-index: 3;
+  }
 
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: $shadow-lg;
+    transform: translateY(-8px);
+    box-shadow: $shadow-hover;
+    border-color: rgba($primary, 0.15);
   }
 
   &__image-container {

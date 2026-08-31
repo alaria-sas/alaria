@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'modules/shared/hooks/useAppDispatch';
 import { useLoader } from 'modules/shared/hooks/useLoader';
 import { login, clearError } from 'modules/auth/store/authSlice';
+import CanvasLogo from 'modules/shared/components/atoms/CanvasLogo/CanvasLogo';
 import { ROUTES } from 'modules/shared/constants/routes';
 import './LoginPage.scss';
 
@@ -28,7 +29,7 @@ const LoginPage = () => {
       <div className="login-page__card">
         <div className="login-page__header">
           <div className="login-page__logo">
-            <img src="/logo-alaria.svg" alt="Alaria" style={{ height: '80px' }} />
+            <CanvasLogo size={90} color="#0B1E24" flutter={8} />
           </div>
           <h2 className="login-page__title">Iniciar Sesión</h2>
           <p className="login-page__subtitle">Ingresa tus credenciales para acceder</p>

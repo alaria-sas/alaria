@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'modules/shared/hooks/useAppDispatch';
 import { register, clearError } from 'modules/auth/store/authSlice';
+import CanvasLogo from 'modules/shared/components/atoms/CanvasLogo/CanvasLogo';
 import { ROUTES } from 'modules/shared/constants/routes';
 import './RegisterPage.scss';
 
@@ -57,7 +58,7 @@ const RegisterPage = () => {
       <div className="register-page__card">
         <div className="register-page__header">
           <div className="register-page__logo">
-            <img src="/logo-alaria.svg" alt="Alaria" style={{ height: '80px' }} />
+            <CanvasLogo size={80} color="#0B1E24" flutter={8} />
           </div>
           <h2 className="register-page__title">Crear Cuenta</h2>
           <p className="register-page__subtitle">Regístrate para acceder a todos los inmuebles</p>
