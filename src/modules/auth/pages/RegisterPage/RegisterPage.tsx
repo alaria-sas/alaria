@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'modules/shared/hooks/useAppDispatch';
 import { register, clearError } from 'modules/auth/store/authSlice';
 import { ROUTES } from 'modules/shared/constants/routes';
-import { supabase } from 'modules/shared/services/supabase';
-import type { CatalogEntity, StratumEntity } from 'modules/shared/types';
 import './RegisterPage.scss';
 
 const RegisterPage = () => {
@@ -19,29 +17,11 @@ const RegisterPage = () => {
     confirmPassword: '',
     full_name: '',
     phone: '',
-    address: '',
-    locality_id: '',
-    stratum_id: '',
   });
 
-  const [localities, setLocalities] = useState<CatalogEntity[]>([]);
-  const [strata, setStrata] = useState<StratumEntity[]>([]);
   const [localError, setLocalError] = useState('');
 
-  useEffect(() => {
-    loadCatalogs();
-  }, []);
-
-  const loadCatalogs = async () => {
-    const [localitiesRes, strataRes] = await Promise.all([
-      supabase.from('house_localities').select('*').order('name'),
-      supabase.from('house_strata').select('*').order('level'),
-    ]);
-    if (localitiesRes.data) setLocalities(localitiesRes.data);
-    if (strataRes.data) setStrata(strataRes.data);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -65,9 +45,6 @@ const RegisterPage = () => {
       password: formData.password,
       full_name: formData.full_name,
       phone: formData.phone || undefined,
-      address: formData.address || undefined,
-      locality_id: formData.locality_id || undefined,
-      stratum_id: formData.stratum_id || undefined,
     }));
 
     if (register.fulfilled.match(result)) {
@@ -115,6 +92,19 @@ const RegisterPage = () => {
             />
           </div>
 
+          <div className="register-page__field">
+            <label className="register-page__label" htmlFor="phone">Teléfono</label>
+            <input
+              id="phone"
+              name="phone"
+              className="register-page__input"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="300 123 4567"
+            />
+          </div>
+
           <div className="register-page__row">
             <div className="register-page__field">
               <label className="register-page__label" htmlFor="password">Contraseña *</label>
@@ -141,65 +131,6 @@ const RegisterPage = () => {
                 placeholder="Repetir contraseña"
                 required
               />
-            </div>
-          </div>
-
-          <div className="register-page__field">
-            <label className="register-page__label" htmlFor="phone">Teléfono</label>
-            <input
-              id="phone"
-              name="phone"
-              className="register-page__input"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="300 123 4567"
-            />
-          </div>
-
-          <div className="register-page__field">
-            <label className="register-page__label" htmlFor="address">Dirección</label>
-            <input
-              id="address"
-              name="address"
-              className="register-page__input"
-              type="text"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Tu dirección actual"
-            />
-          </div>
-
-          <div className="register-page__row">
-            <div className="register-page__field">
-              <label className="register-page__label" htmlFor="locality_id">Localidad</label>
-              <select
-                id="locality_id"
-                name="locality_id"
-                className="register-page__input"
-                value={formData.locality_id}
-                onChange={handleChange}
-              >
-                <option value="">Seleccionar...</option>
-                {localities.map((loc) => (
-                  <option key={loc.id} value={loc.id}>{loc.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="register-page__field">
-              <label className="register-page__label" htmlFor="stratum_id">Estrato</label>
-              <select
-                id="stratum_id"
-                name="stratum_id"
-                className="register-page__input"
-                value={formData.stratum_id}
-                onChange={handleChange}
-              >
-                <option value="">Seleccionar...</option>
-                {strata.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
             </div>
           </div>
 

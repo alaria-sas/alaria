@@ -20,7 +20,7 @@ export const authService = {
     return data;
   },
 
-  async register({ email, password, full_name, phone, address, locality_id, stratum_id }: RegisterData): Promise<HouseUser> {
+  async register({ email, password, full_name, phone }: RegisterData): Promise<HouseUser> {
     // Verificar si el email ya existe
     const { data: existing } = await supabase
       .from('house_users')
@@ -46,9 +46,6 @@ export const authService = {
         password,
         full_name,
         phone: phone || null,
-        address: address || null,
-        locality_id: locality_id || null,
-        stratum_id: stratum_id || null,
         role_id: roleData.id,
       })
       .select('*, house_roles(name)')

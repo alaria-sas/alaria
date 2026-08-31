@@ -23,9 +23,6 @@ export interface RegisterData {
   password: string;
   full_name: string;
   phone?: string;
-  address?: string;
-  locality_id?: string;
-  stratum_id?: string;
 }
 
 export type UserRole = 'admin' | 'user';

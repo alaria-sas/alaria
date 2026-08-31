@@ -45,11 +45,25 @@ const PropertyDetailPage = () => {
   const [selectedSchedule, setSelectedSchedule] = useState('');
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [amenities, setAmenities] = useState<string[]>([]);
   const confirmModal = useConfirm();
 
   useEffect(() => {
-    if (id) dispatch(fetchPropertyById(id));
+    if (id) {
+      dispatch(fetchPropertyById(id));
+      loadAmenities(id);
+    }
   }, [id, dispatch]);
+
+  const loadAmenities = async (propertyId: string) => {
+    const { data } = await supabase
+      .from('house_property_amenities')
+      .select('house_amenities(name)')
+      .eq('property_id', propertyId);
+    if (data) {
+      setAmenities(data.map((a) => (a.house_amenities as unknown as { name: string })?.name).filter(Boolean));
+    }
+  };
 
   useEffect(() => {
     if (user?.id && id) {
@@ -157,13 +171,7 @@ const PropertyDetailPage = () => {
   const transactionType = property.house_transaction_types?.name?.toLowerCase();
   const badgeClass = transactionType === 'venta' ? 'property-detail__badge--sale' : 'property-detail__badge--rent';
 
-  const amenities: { label: string; active: boolean }[] = [
-    { label: 'Balcón', active: property.has_balcony },
-    { label: 'Ascensor', active: property.has_elevator },
-    { label: 'Gimnasio', active: property.has_gym },
-    { label: 'Piscina', active: property.has_pool },
-    { label: 'Seguridad 24h', active: property.has_security },
-  ];
+
 
   return (
     <div className="property-detail">
@@ -318,17 +326,19 @@ const PropertyDetailPage = () => {
             </div>
           )}
 
+          {amenities.length > 0 && (
           <div className="property-detail__amenities">
             <h3>Amenidades</h3>
             <div className="property-detail__amenities-grid">
-              {amenities.filter((a) => a.active).map((amenity) => (
-                <span key={amenity.label} className="property-detail__amenity">
+              {amenities.map((amenity) => (
+                <span key={amenity} className="property-detail__amenity">
                   <Check size={14} />
-                  {amenity.label}
+                  {amenity}
                 </span>
               ))}
             </div>
           </div>
+          )}
         </div>
 
         {/* Sidebar */}

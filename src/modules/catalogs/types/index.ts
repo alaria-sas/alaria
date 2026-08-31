@@ -25,5 +25,6 @@ export const CATALOG_CONFIGS: CatalogConfig[] = [
   { key: 'localities', label: 'Localidades', table: 'house_localities' },
   { key: 'property_states', label: 'Estados de Inmueble', table: 'house_property_states' },
   { key: 'appointment_states', label: 'Estados de Cita', table: 'house_appointment_states' },
+  { key: 'amenities', label: 'Amenidades', table: 'house_amenities' },
   { key: 'contacts', label: 'Asesores', table: 'house_contacts' },
 ];

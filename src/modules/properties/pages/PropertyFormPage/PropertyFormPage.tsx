@@ -54,10 +54,18 @@ const PropertyFormPage = () => {
   const [propertyTypes, setPropertyTypes] = useState<CatalogEntity[]>([]);
   const [transactionTypes, setTransactionTypes] = useState<CatalogEntity[]>([]);
   const [propertyStates, setPropertyStates] = useState<CatalogEntity[]>([]);
+  const [amenities, setAmenities] = useState<CatalogEntity[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [dataLoading, setDataLoading] = useState(isEdit);
+
+  const toggleAmenity = (amenityId: string) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenityId) ? prev.filter((a) => a !== amenityId) : [...prev, amenityId]
+    );
+  };
 
   useEffect(() => {
     loadCatalogs();
@@ -101,24 +109,34 @@ const PropertyFormPage = () => {
         longitude: data.longitude,
       });
     }
+    // Cargar amenidades seleccionadas
+    const { data: amenityLinks } = await supabase
+      .from('house_property_amenities')
+      .select('amenity_id')
+      .eq('property_id', propertyId);
+    if (amenityLinks) {
+      setSelectedAmenities(amenityLinks.map((a) => a.amenity_id));
+    }
     // También cargamos en el store para el MediaManager
     dispatch(fetchPropertyById(propertyId));
     setDataLoading(false);
   };
 
   const loadCatalogs = async () => {
-    const [locRes, strRes, ptRes, ttRes, psRes] = await Promise.all([
+    const [locRes, strRes, ptRes, ttRes, psRes, amRes] = await Promise.all([
       supabase.from('house_localities').select('*').order('name'),
       supabase.from('house_strata').select('*').order('level'),
       supabase.from('house_property_types').select('*').order('name'),
       supabase.from('house_transaction_types').select('*').order('name'),
       supabase.from('house_property_states').select('*').order('name'),
+      supabase.from('house_amenities').select('*').order('name'),
     ]);
     if (locRes.data) setLocalities(locRes.data);
     if (strRes.data) setStrata(strRes.data);
     if (ptRes.data) setPropertyTypes(ptRes.data);
     if (ttRes.data) setTransactionTypes(ttRes.data);
     if (psRes.data) setPropertyStates(psRes.data);
+    if (amRes.data) setAmenities(amRes.data);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -142,10 +160,12 @@ const PropertyFormPage = () => {
       await withLoader(async () => {
         if (isEdit && id) {
           await dispatch(updateProperty({ id, data: formData })).unwrap();
+          await saveAmenities(id);
           navigate(`/inmuebles/${id}`);
         } else {
           if (!user?.id) throw new Error('Sesión no válida');
-          await dispatch(createProperty({ data: formData, createdBy: user.id })).unwrap();
+          const created = await dispatch(createProperty({ data: formData, createdBy: user.id })).unwrap();
+          await saveAmenities(created.id);
           navigate(ROUTES.PROPERTIES);
         }
       });
@@ -153,6 +173,16 @@ const PropertyFormPage = () => {
       setError(err instanceof Error ? err.message : 'Error al guardar');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const saveAmenities = async (propertyId: string) => {
+    // Eliminar amenidades previas y reinsertar las seleccionadas
+    await supabase.from('house_property_amenities').delete().eq('property_id', propertyId);
+    if (selectedAmenities.length > 0) {
+      await supabase.from('house_property_amenities').insert(
+        selectedAmenities.map((amenityId) => ({ property_id: propertyId, amenity_id: amenityId }))
+      );
     }
   };
 
@@ -286,26 +316,21 @@ const PropertyFormPage = () => {
         <div className="property-form-page__section">
           <h3 className="property-form-page__section-title">Amenidades</h3>
           <div className="property-form-page__checkbox-group">
-            <label className="property-form-page__checkbox">
-              <input type="checkbox" name="has_balcony" checked={formData.has_balcony} onChange={handleChange} />
-              Balcón
-            </label>
-            <label className="property-form-page__checkbox">
-              <input type="checkbox" name="has_elevator" checked={formData.has_elevator} onChange={handleChange} />
-              Ascensor
-            </label>
-            <label className="property-form-page__checkbox">
-              <input type="checkbox" name="has_gym" checked={formData.has_gym} onChange={handleChange} />
-              Gimnasio
-            </label>
-            <label className="property-form-page__checkbox">
-              <input type="checkbox" name="has_pool" checked={formData.has_pool} onChange={handleChange} />
-              Piscina
-            </label>
-            <label className="property-form-page__checkbox">
-              <input type="checkbox" name="has_security" checked={formData.has_security} onChange={handleChange} />
-              Seguridad 24h
-            </label>
+            {amenities.map((amenity) => (
+              <label key={amenity.id} className="property-form-page__checkbox">
+                <input
+                  type="checkbox"
+                  checked={selectedAmenities.includes(amenity.id)}
+                  onChange={() => toggleAmenity(amenity.id)}
+                />
+                {amenity.name}
+              </label>
+            ))}
+            {amenities.length === 0 && (
+              <p style={{ fontSize: '0.8125rem', color: '#94a3ab' }}>
+                No hay amenidades. Agrégalas desde Catálogos.
+              </p>
+            )}
           </div>
         </div>
 
