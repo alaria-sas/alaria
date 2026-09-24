@@ -48,11 +48,14 @@
   &__image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+
+    // SmartImage envuelve el <img> en un <span>; el zoom en hover va al img.
+    img {
+      transition: transform 0.3s ease;
+    }
   }
 
-  &:hover &__image {
+  &:hover &__image img {
     transform: scale(1.05);
   }
 

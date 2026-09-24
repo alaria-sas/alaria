@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { MapPin, BedDouble, Bath, Car, ImageOff, UserCheck } from 'lucide-react';
 import { useAppSelector } from 'modules/shared/hooks/useAppDispatch';
+import SmartImage from 'modules/shared/components/atoms/SmartImage/SmartImage';
 import type { PropertyWithRelations } from 'modules/properties/types';
 import './PropertyCard.scss';
 
@@ -34,11 +35,10 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     >
       <div className="property-card__image-container">
         {coverImage ? (
-          <img
+          <SmartImage
             className="property-card__image"
             src={coverImage.file_url}
             alt={property.title}
-            loading="lazy"
           />
         ) : (
           <div className="property-card__no-image">

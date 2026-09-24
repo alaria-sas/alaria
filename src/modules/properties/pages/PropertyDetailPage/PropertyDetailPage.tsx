@@ -12,8 +12,10 @@ import { useConfirm } from 'modules/shared/hooks/useConfirm';
 import ConfirmModal from 'modules/shared/components/molecules/ConfirmModal/ConfirmModal';
 import { ROUTES } from 'modules/shared/constants/routes';
 import PropertyMap from 'modules/properties/components/organisms/PropertyMap/PropertyMap';
+import SmartImage from 'modules/shared/components/atoms/SmartImage/SmartImage';
 import MediaGallery from 'modules/properties/components/organisms/MediaGallery/MediaGallery';
 import MiniGallery from 'modules/properties/components/organisms/MiniGallery/MiniGallery';
+import PropertyDetailSkeleton from './PropertyDetailSkeleton';
 import './PropertyDetailPage.scss';
 
 const formatPrice = (price: number): string => {
@@ -146,7 +148,7 @@ const PropertyDetailPage = () => {
   };
 
   if (isLoading || !property) {
-    return <div className="property-detail__loading">Cargando inmueble...</div>;
+    return <PropertyDetailSkeleton />;
   }
 
   const handleDeleteProperty = async () => {
@@ -234,10 +236,11 @@ const PropertyDetailPage = () => {
         <>
           {/* Desktop: portada + mini gallery */}
           <div className="property-detail__gallery property-detail__gallery--desktop">
-            <img
+            <SmartImage
               className="property-detail__main-image"
               src={coverImage?.file_url || photos[0].file_url}
               alt={property.title}
+              loading="eager"
             />
             {restPhotos.length > 0 && (
               <div className="property-detail__mini-gallery">

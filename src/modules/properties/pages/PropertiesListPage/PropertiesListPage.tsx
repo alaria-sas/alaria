@@ -3,6 +3,7 @@ import { Building2, LayoutGrid, Map, SlidersHorizontal, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from 'modules/shared/hooks/useAppDispatch';
 import { fetchProperties, setFilters } from 'modules/properties/store/propertiesSlice';
 import PropertyCard from 'modules/properties/components/molecules/PropertyCard/PropertyCard';
+import PropertyCardSkeleton from 'modules/properties/components/molecules/PropertyCard/PropertyCardSkeleton';
 import PropertyFilters from 'modules/properties/components/organisms/PropertyFilters/PropertyFilters';
 import PropertiesMap from 'modules/properties/components/organisms/PropertiesMap/PropertiesMap';
 import type { PropertyFilters as FiltersType } from 'modules/properties/types';
@@ -71,7 +72,7 @@ const PropertiesListPage = () => {
         {viewMode === 'grid' ? (
           <div className="properties-list-page__grid">
             {isLoading ? (
-              <div className="properties-list-page__loading">Cargando inmuebles...</div>
+              Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
             ) : items.length === 0 ? (
               <div className="properties-list-page__empty">
                 <Building2 size={64} className="properties-list-page__empty-icon" />

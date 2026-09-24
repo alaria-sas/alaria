@@ -1,0 +1,63 @@
+@use 'modules/shared/styles/variables' as *;
+
+.smart-image {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: $gray-200;
+
+  // Placeholder shimmer mientras no ha cargado la imagen.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: smart-image-shimmer 1.4s ease-in-out infinite;
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  // Cuando la imagen terminó de cargar: se muestra y se apaga el shimmer.
+  &--loaded {
+    background-color: transparent;
+
+    &::after {
+      display: none;
+    }
+
+    .smart-image__img {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes smart-image-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smart-image::after {
+    animation: none;
+  }
+
+  .smart-image__img {
+    transition: none;
+  }
+}

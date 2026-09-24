@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Maximize2, Play } from 'lucide-react';
 import type { PropertyMedia } from 'modules/properties/types';
+import SmartImage from 'modules/shared/components/atoms/SmartImage/SmartImage';
 import './MiniGallery.scss';
 
 interface MiniGalleryProps {
@@ -71,7 +72,7 @@ const MiniGallery = ({ media, onFullscreen }: MiniGalleryProps) => {
               {item.file_type === 'video' ? (
                 <div className="mini-gallery__thumb-video"><Play size={10} /></div>
               ) : (
-                <img src={item.file_url} alt={item.file_name} />
+                <SmartImage src={item.file_url} alt={item.file_name} />
               )}
             </button>
           ))}
